@@ -1,0 +1,15 @@
+{
+  "name": "timekeeper",
+  "version": "1.0.0",
+  "description": "Keeps time of rounds",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "sam",
+  "license": "ISC",
+  "dependencies": {
+    "firebase-admin": "^5.8.2"
+  }
+}
