@@ -21,8 +21,38 @@ server.listen(port, hostname, () => {
 });
 
 var db = admin.database();
-var ref = db.ref("bad-words");
+var ref = db.ref('/poll/');
 
-ref.once("value", function(snapshot) {
-  console.log(snapshot.val());
+ref.on("child_added", function(snapshot, prevChildKey) {
+  var chapters = snapshot.val();
+  var storyId = snapshot.key;
+  console.log("story: " + storyId);
+
+  for (var chapter = 0; chapter < chapters.length; chapter++) {
+    var rounds = chapters[chapter];
+
+    for (var round = 0; round < rounds.length; round++) {
+      var poll = rounds[round];
+
+      if (poll.timeEnding === undefined) {
+        var timer = 1000 * 60;
+        var endTime = poll.timeCreated + timer;
+        var updateRef = ref.child(storyId).child(chapter).child(round);
+
+        console.log("setting end time to " + endTime + " on " + updateRef);
+
+        updateRef.update({
+          "timeEnding": endTime
+        });
+
+        setTimeout(function() {
+          console.log("setting finished " + updateRef);
+          updateRef.update({
+            "finished": true
+          });
+        }, timer);
+      }
+    }
+  }
+
 });
